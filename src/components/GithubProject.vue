@@ -58,16 +58,6 @@ const projectData = [
     author: "imsyy",
     desc: "Snavigation 一个简约的起始页 | 支持自定义搜索引擎，自定义快捷方式，自定义壁纸以及数据备份",
   },
-  {
-    name: "DailyHotApi",
-    author: "imsyy",
-    desc: "今日热榜 API，一个聚合热门数据的 API 接口，支持 Vercel 部署 | 前端页面：https://github.com/imsyy/DailyHot",
-  },
-  {
-    name: "site-status",
-    author: "imsyy",
-    desc: "📺 一个基于 UptimeRobot API 的在线状态面板 | 站点监测 | 状态检测 | An online status panel based on the UptimeRobot API | UptimeRobot, status, site",
-  },
 ];
 
 // 计算网站链接
