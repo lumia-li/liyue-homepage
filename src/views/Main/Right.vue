@@ -3,7 +3,6 @@
     <!-- 移动端 Logo -->
     <div class="logo text-hidden" @click="store.mobileFuncState = !store.mobileFuncState">
       <span class="bg">{{ siteUrl[0] }}</span>
-      <span class="sm">.{{ siteUrl[1] }}</span>
     </div>
     <!-- 功能区 -->
     <Func />
@@ -39,7 +38,8 @@ const siteUrl = computed(() => {
   .logo {
     width: 100%;
     font-family: "Pacifico-Regular";
-    font-size: 2.25rem;
+    /* 站点名较长时自适应缩放，避免被 text-hidden 截断 */
+    font-size: clamp(1.5rem, 8.5vw, 2.25rem);
     position: fixed;
     top: 6%;
     left: 0;
