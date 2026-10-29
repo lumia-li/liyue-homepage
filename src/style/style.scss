@@ -19,7 +19,7 @@ body {
   padding: 0;
   background-color: #333;
   overflow: hidden;
-  font-family: "HarmonyOS_Regular", sans-serif;
+  font-family: "KeinannMaruPOP", "HarmonyOS_Regular", sans-serif;
 }
 
 *,
@@ -55,6 +55,12 @@ a:hover {
   font-family: "UnidreamLED";
   font-display: swap;
   src: url("/font/UnidreamLED.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "KeinannMaruPOP";
+  font-display: swap;
+  src: url("/font/KeinannMaruPOP_CN-EN.woff2") format("woff2");
 }
 
 // 基础样式
