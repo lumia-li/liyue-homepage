@@ -23,7 +23,8 @@
     <div class="content">
       <!-- 可在此处自定义任意内容 -->
       <TimeCapsule />
-      <MoreContent />
+      <GithubProject />
+      <MoreContent v-show="false" />
     </div>
   </div>
 </template>
@@ -32,6 +33,7 @@
 import { CloseOne, SettingTwo } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import TimeCapsule from "@/components/TimeCapsule.vue";
+import GithubProject from "@/components/GithubProject.vue";
 import MoreContent from "@/components/MoreContent.vue";
 
 const store = mainStore();

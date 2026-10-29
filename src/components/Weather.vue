@@ -18,11 +18,14 @@
 </template>
 
 <script setup>
-import { getAdcode, getWeather, getOtherWeather } from "@/api";
+import { getCity, getWeather, getOtherWeather } from "@/api";
 import { Error } from "@icon-park/vue-next";
 
-// 高德开发者 Key
-const mainKey = import.meta.env.VITE_WEATHER_KEY;
+// 和风天气 Key
+const mainKey = import.meta.env.VITE_QWEATHER_KEY;
+
+// 城市，支持 LocationID / 经纬度 / 城市名，默认北京
+const location = import.meta.env.VITE_QWEATHER_LOCATION || "101010100";
 
 // 天气数据
 const weatherData = reactive({
@@ -70,23 +73,19 @@ const getWeatherData = async () => {
         windpower: data.condition.day_wind_power,
       };
     } else {
-      // 获取 Adcode
-      const adCode = await getAdcode(mainKey);
-      console.log(adCode);
-      if (adCode.infocode !== "10000") {
-        throw "地区查询失败";
-      }
+      // 和风天气：先查询城市，拿到 LocationID
+      const city = await getCity(location);
       weatherData.adCode = {
-        city: adCode.city,
-        adcode: adCode.adcode,
+        city: city.city,
+        adcode: city.adcode,
       };
-      // 获取天气信息
-      const result = await getWeather(mainKey, weatherData.adCode.adcode);
+      // 获取实时天气
+      const now = await getWeather(city.adcode);
       weatherData.weather = {
-        weather: result.lives[0].weather,
-        temperature: result.lives[0].temperature,
-        winddirection: result.lives[0].winddirection,
-        windpower: result.lives[0].windpower,
+        weather: now.text,
+        temperature: now.temp,
+        winddirection: now.windDir,
+        windpower: now.windScale,
       };
     }
   } catch (error) {
