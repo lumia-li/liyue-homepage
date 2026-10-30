@@ -1,9 +1,9 @@
 <template>
   <!-- 基本信息 -->
   <div class="message">
-    <!-- Logo -->
+    <!-- Logo：实时时钟 -->
     <div class="logo">
-      <img class="logo-img" :src="siteLogo" alt="logo" />
+      <Clock class="logo-img" />
       <div :class="{ name: true, 'text-hidden': true, long: siteUrl[0].length >= 6 }">
         <span class="bg">{{ siteUrl[0] }}</span>
       </div>
@@ -33,10 +33,11 @@ import { Icon } from "@vicons/utils";
 import { QuoteLeft, QuoteRight } from "@vicons/fa";
 import { Error } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
+import Clock from "@/components/Clock.vue";
 const store = mainStore();
 
-// 主页站点logo
-const siteLogo = import.meta.env.VITE_SITE_MAIN_LOGO;
+// 主页 Logo 已改为实时时钟（Clock.vue）
+// 如需恢复静态图片，改为 <Clock :src="import.meta.env.VITE_SITE_MAIN_LOGO" />
 // 站点链接
 const siteUrl = computed(() => {
   const url = import.meta.env.VITE_SITE_URL;
