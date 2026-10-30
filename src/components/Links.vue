@@ -69,6 +69,14 @@ const siteIcon = {
 
 // 链接跳转
 const jumpLink = (data) => {
+  // 未配置链接时给出提示，不再打开空白页
+  if (!data.link) {
+    ElMessage({
+      message: `${data.name}暂时为空，敬请期待`,
+      grouping: true,
+    });
+    return;
+  }
   window.open(data.link, "_blank");
 };
 
