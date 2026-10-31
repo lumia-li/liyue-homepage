@@ -297,11 +297,9 @@ const loadSongs = async () => {
   if (loaded.value || loading.value) return;
   loading.value = true;
   try {
-    const list = await getPlayerList(
-      import.meta.env.VITE_SONG_SERVER,
-      import.meta.env.VITE_SONG_TYPE,
-      import.meta.env.VITE_SONG_ID,
-    );
+    // 音源参数统一由 api 层固定，这里不再从 env 传入，
+    // 否则构建环境里的 VITE_SONG_ID 会把默认值覆盖成别的歌单
+    const list = await getPlayerList();
     // 过滤掉没有播放地址的条目
     songs.value = (list || []).filter((item) => item?.url);
     loaded.value = true;
