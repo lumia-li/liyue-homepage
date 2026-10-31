@@ -6,16 +6,17 @@ import fetchJsonp from "fetch-jsonp";
  */
 
 // 获取音乐播放列表
-// 兜底默认值：某些构建环境读不到 .env 时，也保证能拉到歌单
-const SONG_API = import.meta.env.VITE_SONG_API || "https://api.injahow.cn/meting/";
+// 注意：接口地址写死。Vercel 项目里配过 VITE_SONG_API（api-meting.imsyy.top），
+// 环境变量优先级高于 .env，而那个服务已经下线，导致线上歌单为空，
+// 所以这里不再读 env，直接用确认可用的地址
+const SONG_API = "https://api.injahow.cn/meting/";
 const SONG_SERVER = import.meta.env.VITE_SONG_SERVER || "netease";
 const SONG_TYPE = import.meta.env.VITE_SONG_TYPE || "playlist";
 const SONG_ID = import.meta.env.VITE_SONG_ID || "2564109265";
 
 export const getPlayerList = async (server, type, id) => {
-  const api = import.meta.env.VITE_SONG_API || SONG_API;
   const res = await fetch(
-    `${api}?server=${server || SONG_SERVER}&type=${type || SONG_TYPE}&id=${id || SONG_ID}`,
+    `${SONG_API}?server=${server || SONG_SERVER}&type=${type || SONG_TYPE}&id=${id || SONG_ID}`,
   );
   const data = await res.json();
 
