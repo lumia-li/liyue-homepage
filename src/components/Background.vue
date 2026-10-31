@@ -4,6 +4,7 @@
       v-show="store.imgLoadStatus"
       :src="bgUrl"
       class="bg"
+      :class="{ ready: imgReady }"
       alt="cover"
       @load="imgLoadComplete"
       @error.once="imgLoadError"
@@ -30,6 +31,8 @@ import { Error } from "@icon-park/vue-next";
 const store = mainStore();
 const bgUrl = ref(null);
 const imgTimeout = ref(null);
+// 壁纸入场动画是否已结束（结束后固定终态，不再重播）
+const imgReady = ref(false);
 const emit = defineEmits(["loadComplete"]);
 
 // 壁纸随机数
@@ -62,6 +65,8 @@ const imgLoadComplete = () => {
 // 图片动画完成
 const imgAnimationEnd = () => {
   console.log("壁纸加载且动画完成");
+  // 固定终态：动画只用于首次入场，之后无论渲染层怎么重组都不会再回到模糊态
+  imgReady.value = true;
   // 加载完成事件
   emit("loadComplete");
 };
@@ -90,6 +95,11 @@ watch(
 onMounted(() => {
   // 加载壁纸
   changeBg(store.coverType);
+
+  // 兜底：animationend 偶尔会丢失，3 秒后直接固定终态
+  setTimeout(() => {
+    imgReady.value = true;
+  }, 3000);
 });
 
 onBeforeUnmount(() => {
@@ -125,6 +135,13 @@ onBeforeUnmount(() => {
       transform 0.3s;
     animation: fade-blur-in 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     animation-delay: 0.45s;
+
+    /* 动画结束后固定终态：即使渲染层被重组导致动画重置，也不会再回到模糊变暗的起点 */
+    &.ready {
+      animation: none;
+      filter: blur(0) brightness(1);
+      transform: scale(1);
+    }
   }
   .gray {
     opacity: 1;

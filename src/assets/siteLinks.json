@@ -12,7 +12,8 @@
   {
     "icon": "CompactDisc",
     "name": "音乐",
-    "link": ""
+    "link": "",
+    "action": "player"
   },
   {
     "icon": "Compass",

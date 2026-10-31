@@ -47,6 +47,9 @@ import { Blog, CompactDisc, Cloud, Compass, Book } from "@vicons/fa"; // 注意�
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination, Mousewheel } from "swiper/modules";
 import siteLinks from "@/assets/siteLinks.json";
+import { mainStore } from "@/store";
+
+const store = mainStore();
 
 // 计算网站链接
 const siteLinksList = computed(() => {
@@ -69,6 +72,11 @@ const siteIcon = {
 
 // 链接跳转
 const jumpLink = (data) => {
+  // 特殊动作：音乐按钮唤出播放器
+  if (data.action === "player") {
+    store.musicOpenState = !store.musicOpenState;
+    return;
+  }
   // 未配置链接时给出提示，不再打开空白页
   if (!data.link) {
     ElMessage({

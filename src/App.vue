@@ -5,7 +5,7 @@
   <Background @loadComplete="loadComplete" />
   <!-- 主界面 -->
   <Transition name="fade" mode="out-in">
-    <main id="main" v-if="store.imgLoadStatus">
+    <main id="main" v-if="store.imgLoadStatus" :class="{ ready: mainReady }">
       <div class="container" v-show="!store.backgroundShow">
         <section class="all" v-show="!store.setOpenState">
           <MainLeft />
@@ -31,6 +31,8 @@
       </Transition>
     </main>
   </Transition>
+  <!-- 音乐播放器 -->
+  <Player />
 </template>
 
 <script setup>
@@ -44,11 +46,15 @@ import MainRight from "@/views/Main/Right.vue";
 import Background from "@/components/Background.vue";
 import Footer from "@/components/Footer.vue";
 import Box from "@/views/Box/index.vue";
+import Player from "@/components/Player.vue";
 import MoreSet from "@/views/MoreSet/index.vue";
 import cursorInit from "@/utils/cursor.js";
 import config from "@/../package.json";
 
 const store = mainStore();
+
+// 主界面入场动画是否结束（结束后清掉 transform，避免留下常驻合成层）
+const mainReady = ref(false);
 
 // 页面宽度
 const getWidth = () => {
@@ -77,6 +83,11 @@ watch(
 );
 
 onMounted(() => {
+  // 入场动画（0.5s 延迟 + 0.65s 时长）结束后清掉常驻 transform
+  setTimeout(() => {
+    mainReady.value = true;
+  }, 1500);
+
   // 自定义鼠标
   cursorInit();
 
@@ -137,6 +148,13 @@ onBeforeUnmount(() => {
   transition: transform 0.3s;
   animation: fade-blur-main-in 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   animation-delay: 0.5s;
+
+  /* 入场结束后清掉 transform：
+     常驻的 transform 会建立合成层，干扰 backdrop-filter 的采样与合成 */
+  &.ready {
+    animation: none;
+    transform: none;
+  }
   .container {
     width: 100%;
     height: 100vh;
