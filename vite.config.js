@@ -27,8 +27,20 @@ export default ({ mode }) =>
           clientsClaim: true,
           runtimeCaching: [
             {
-              urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/, // js / css 静态资源缓存
-              handler: "CacheFirst",
+              // 页面导航优先走网络，保证每次打开都拿到最新入口 HTML，
+              // 否则旧 HTML 会一直指向旧构建产物
+              urlPattern: ({ request }) => request.mode === "navigate",
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "html-cache",
+                networkTimeoutSeconds: 4,
+              },
+            },
+            {
+              // js / css：先用缓存保证秒开，同时后台拉新版本，
+              // 下次进入即为新版，不再出现“部署了但线上还是旧代码”
+              urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/,
+              handler: "StaleWhileRevalidate",
               options: {
                 cacheName: "js-css-cache",
               },
