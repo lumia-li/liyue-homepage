@@ -9,7 +9,7 @@
       :class="{ ready: imgReady }"
       alt="cover"
       @load="imgLoadComplete"
-      @error.once="imgLoadError"
+      @error="imgLoadError"
       @animationend="imgAnimationEnd"
     />
     <div :class="store.backgroundShow ? 'gray hidden' : 'gray'" />
@@ -33,6 +33,8 @@ import { Error } from "@icon-park/vue-next";
 const store = mainStore();
 const bgUrl = ref(null);
 const imgTimeout = ref(null);
+// 硬超时：外部壁纸接口有时既不 load 也不 error，到点必须放行
+let hardTimeout = null;
 // 壁纸入场动画是否已结束（结束后固定终态，不再重播）
 const imgReady = ref(false);
 const emit = defineEmits(["loadComplete"]);
@@ -56,6 +58,8 @@ const changeBg = (type) => {
 
 // 图片加载完成
 const imgLoadComplete = () => {
+  clearTimeout(hardTimeout);
+
   imgTimeout.value = setTimeout(
     () => {
       store.setImgLoadStatus(true);
@@ -73,9 +77,22 @@ const imgAnimationEnd = () => {
   emit("loadComplete");
 };
 
+// 加载失败次数，避免在坏地址之间反复重试
+let errorCount = 0;
+
 // 图片显示失败
 const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
+  errorCount += 1;
+
+  // 已经重试过还失败，直接放行，绝不能让首屏一直转圈
+  if (errorCount > 2) {
+    clearTimeout(imgTimeout.value);
+    clearTimeout(hardTimeout);
+    store.setImgLoadStatus(true);
+    return;
+  }
+
   ElMessage({
     message: "壁纸加载失败，已临时切换回默认",
     icon: h(Error, {
@@ -102,10 +119,18 @@ onMounted(() => {
   setTimeout(() => {
     imgReady.value = true;
   }, 3000);
+
+  // 硬超时：外部壁纸接口挂起时（不 load 也不 error）10 秒后强制进主界面
+  hardTimeout = setTimeout(() => {
+    if (store.imgLoadStatus) return;
+    clearTimeout(imgTimeout.value);
+    store.setImgLoadStatus(true);
+  }, 10000);
 });
 
 onBeforeUnmount(() => {
   clearTimeout(imgTimeout.value);
+  clearTimeout(hardTimeout);
 });
 </script>
 
