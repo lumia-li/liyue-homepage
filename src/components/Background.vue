@@ -1,7 +1,9 @@
 <template>
   <div :class="store.backgroundShow ? 'cover show' : 'cover'">
+    <!-- 不能再挂 v-show="store.imgLoadStatus"：
+         那个标志要等图片 load 后才置 true，而 display:none 的图片
+         浏览器不会去加载，会互相等待成死循环，首屏永远卡在加载中 -->
     <img
-      v-show="store.imgLoadStatus"
       :src="bgUrl"
       class="bg"
       :class="{ ready: imgReady }"
